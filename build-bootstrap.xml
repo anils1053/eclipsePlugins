@@ -1,0 +1,115 @@
+<project name="Build.Bootstrap" default="pb2.bootstrap">
+	<description>
+		Bootstrap for PlatformBuild2.
+		This should be committed to a product source tree, and used to pull in PlatformBuild2 with:
+
+			ant -f build-bootstrap.xml pb2.bootstrap
+		
+		This version of bootstrap was published with PlatformBuild 2.2
+	</description>
+
+	<property name="pb2.dir" value="${basedir}/pb2"/>
+	<property name="pb2.dl.dir" value="${pb2.dir}/.dl"/>
+	<property name="pb2.marker.file" value="${pb2.dl.dir}/.marker"/>
+	<property name="pb2.bootstrap.file" value="${pb2.dir}/bootstrap/build-bootstrap.xml"/>
+	<property name="pb2.braces.file" value="${pb2.dir}/bootstrap/build-braces.xml"/>
+	<property name="pb2.ivy.base" value="http://ivy-rep-ro"/>
+
+	<property file="${basedir}/../pb2.properties"/>
+	<property file="${basedir}/pb2.properties"/>
+
+	<condition property="pb2.version" value="stable">
+		<not><isset property="pb2.version"/></not>
+	</condition>
+
+	<condition property="pb2.version.effective" value="2.2" else="${pb2.version}">
+		<equals arg1="${pb2.version}" arg2="compatible" trim="true"/>
+	</condition>
+
+	<property name="pb2.file" value="${pb2.dl.dir}/pb2_${pb2.version}.zip"/>
+	<property name="pb2.ivy.resource" value="${pb2.ivy.base}/orchestral/pb2/${pb2.version.effective}/zips/pb2.zip"/>
+
+	<condition property="pb2.online">
+	  <isreachable url="${pb2.ivy.base}" timeout="3"/>
+	</condition>
+
+	<target name="pb2.refresh" depends="pb2.clean,pb2.bootstrap">
+	</target>
+	
+	<target name="pb2.clean">
+		<delete dir="${pb2.dir}"/>
+		<mkdir dir="${pb2.dir}"/>
+		<mkdir dir="${pb2.dl.dir}"/>
+	</target>
+	
+	<target name="init" depends="pb2.bootstrap"/>
+
+	<target name="pb2.bootstrap" depends="pb2.bootstrap.check,pb2.install,pb2.bootstrap.sad,pb2.bootstrap.update,pb2.braces.check,pb2.braces" 
+		description="Bootstrap PlatformBuild2">
+	</target>
+	
+	<target name="pb2.install" unless="pb2.current" if="pb2.available">
+		<delete dir="${pb2.dir}" includes="*" excludes="${pb2.dl.dir}"/>
+		<unzip src="${pb2.file}" dest="${pb2.dir}"/>
+		<echo file="${pb2.marker.file}" message="${pb2.version}"/>
+	</target>
+
+	<target name="pb2.braces.check">
+		<available property="pb2.brace.available" file="${pb2.braces.file}"/>
+	</target>
+
+	<target name="pb2.braces" if="pb2.brace.available">
+		<echo message="Executing second level bootstrap"/>
+		<ant antfile="${pb2.braces.file}"/>
+	</target>
+	
+	<target name="pb2.bootstrap.sad" if="pb2.sad">
+		<fail message=":( Failed to bootstrap PlatformBuild. There is no cached copy of PlatformBuild, and the online distribution could not be downloaded."/>
+	</target>
+
+	<target name="pb2.bootstrap.check" depends="pb2.bootstrap.download">
+		<echo message="In ${basedir}"/>
+
+		<available property="pb2.available" file="${pb2.file}"/>
+		<available property="pb2.dir.available" file="${pb2.marker.file}"/>
+		<uptodate property="pb2.dir.uptodate" srcfile="${pb2.file}" targetfile="${pb2.marker.file}"/>
+		<loadfile srcFile="${pb2.marker.file}" property="pb2.marked.version" quiet="true"/>
+		<condition property="pb2.current">
+			<and>
+				<isset property="pb2.dir.available"/>
+				<not>
+					<and>
+						<isset property="pb2.available"/>
+						<not><isset property="pb2.dir.uptodate"/></not>
+					</and>
+				</not>
+				<equals arg1="${pb2.version}" arg2="${pb2.marked.version}" trim="true"/>
+			</and>
+		</condition>
+		<condition property="pb2.sad">
+			<and>
+				<not><isset property="pb2.dir.available"/></not>
+				<not><isset property="pb2.available"/></not>
+			</and>
+		</condition>
+
+		<echo message="c=${pb2.current} a=${pb2.available} d=${pb2.dir.available} u=${pb2.dir.uptodate} m=${pb2.marked.version}"/>
+	</target>
+
+	<target name="pb2.bootstrap.download" if="pb2.online">
+		<mkdir dir="${pb2.dir}"/>
+		<mkdir dir="${pb2.dl.dir}"/>
+
+		<echo message="Retrieving PB2 ${pb2.version.effective}..."/>
+		<get src="${pb2.ivy.resource}" 
+			 usetimestamp="true"
+			 dest="${pb2.file}"
+			 username="ivy-http"
+			 password="YouSayHello"/>
+	</target>
+
+	<target name="pb2.bootstrap.update">
+		<copy file="${pb2.bootstrap.file}" tofile="${ant.file.Build.Bootstrap}" preservelastmodified="true"/>
+	</target>
+
+</project>

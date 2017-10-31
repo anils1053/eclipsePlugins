@@ -1,0 +1,3 @@
+<project name="com.orchestral.papoy.plugin.aplore.client" basedir="." xmlns:antc="antlib:net.sf.antcontrib">
+	<import file="../pb2/build-osgi.xml" />
+</project>

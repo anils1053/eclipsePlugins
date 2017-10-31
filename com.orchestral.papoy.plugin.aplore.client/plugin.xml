@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="Aplore Commands"
+            id="com.orchestral.papoy.plugin.aplore.commands">
+      </category>
+      <command
+            name="publish rest"
+            categoryId="com.orchestral.papoy.plugin.aplore.commands"
+            id="com.orchestral.papoy.plugin.aplore.commands.publish.rest">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="com.orchestral.papoy.plugin.aplore.commands.publish.rest"
+            class="com.orchestral.papoy.plugin.aplore.handlers.WebBundleBuildHandler">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+           <command
+                  commandId="com.orchestral.papoy.plugin.aplore.commands.publish.rest"
+                  icon="icons/minion.gif"
+                  tooltip="publish REST"
+                  id="com.orchestral.papoy.plugin.aplore.menu.publish.rest.command">
+            </command>
+      </menuContribution>
+   </extension>
+</plugin>

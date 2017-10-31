@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="Web Project"
+            id="com.orchestral.papoy.plugin.wprob.commands.web.project">
+      </category>
+      <command
+            name="Create JS Module"
+            categoryId="com.orchestral.papoy.plugin.wprob.commands.web.project"
+            id="com.orchestral.papoy.plugin.wprob.commands.create.js.module">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="com.orchestral.papoy.plugin.wprob.commands.create.js.module"
+            class="com.orchestral.papoy.plugin.wprob.handlers.WebBundleBuildHandler">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.orchestral.papoy.plugin.wprob.commands.create.js.module"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </key>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution locationURI="popup:org.eclipse.jdt.ui.PackageExplorer">
+           <command
+                  commandId="com.orchestral.papoy.plugin.wprob.commands.create.js.module"
+                  icon="icons/minion.gif"
+                  tooltip="Create JS Module"
+                  id="com.orchestral.papoy.plugin.wprob.menu.create.web.project.command">
+            </command>
+      </menuContribution>
+   </extension>
+</plugin>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ivy-module version="1.0">
+	  <info module="com.orchestral.papoy.plugin.aplore.client" organisation="orchestral" status="integration"/>
+	  <configurations>
+		    <conf name="nodist"/>
+	  </configurations>
+	  <publications>
+	</publications>
+	  <dependencies defaultconfmapping="nodist"> 
+		  <dependency conf="nodist" name="com.orchestral.i12e.clinical.event" org="bundle" rev="8.11.0.final"/>
+		  <dependency conf="nodist" name="com.google.gson" org="bundle" rev="2.2.4"/>
+		  <dependency conf="nodist" name="com.sun.jersey.jersey-core" org="bundle" rev="1.17" transitive="true"/>
+		  <dependency conf="nodist" name="com.sun.jersey.jersey-servlet" org="bundle" rev="1.17" transitive="true"/>
+		  <dependency conf="nodist" name="foundation" org="application" rev="8.3.0.final" transitive="true"/>
+	  </dependencies> 
+</ivy-module>
